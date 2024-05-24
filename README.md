@@ -29,7 +29,7 @@ Bakalárska práca sa zaoberá klasifikačnými modelmi na predikciu binárneho 
     - Vykreslenie matíc zámen
 
 ## Návod na spustenie kódu
-Praktická časť pozostáva zo 4 zdrojových kódov, ktoré je potrebné spustiť v nasledujúcom poradí:
+Praktická časť pozostáva zo 4 zdrojových kódov, ktoré je potrebné spustiť v nasledovnom poradí:
 1. Premenovanie.ipynb
 2. Grafy.ipynb
 3. Priprava.ipynb
