@@ -1,6 +1,6 @@
 # Bakalárska práca
 
-Bakalárska práca sa zaoberá klasifikačnými modelmi na predikciu binárneho atribútu. Praktická časť bola vypracovaná v súlade s metodológiou CRISP-DM za použitia Pythonu a jemu prislúchajúcich knižníc.
+Bakalárska práca sa zaoberá klasifikačnými modelmi na predikciu binárneho atribútu. Praktická časť bola vypracovaná v súlade s metodológiou CRISP-DM za použitia programovacie jazkyka Python a jemu prislúchajúcich knižníc.
 
 - **Názov**: Analýza dopravných nehôd metódami strojového učenia
 - **Autor**: Sofia Schürgerová
@@ -11,12 +11,12 @@ Bakalárska práca sa zaoberá klasifikačnými modelmi na predikciu binárneho 
 1. **Pochopenie dát**
     - Vizualizácie kategorických a numerických atribútov pomocou histogramov a boxplotov
 2. **Príprava dát**
-    -  Premenovanie atribútov a ich hodnôt
+    - Premenovanie atribútov a ich hodnôt
     - Odstránenie chýbajúcich hodnôt a atribútov s veľkým množstvom chýbajúcich dát
-    - Pretypovani atribútov
+    - Pretypovanie atribútov
     - Rozdelenie atribútov do viacerých atribútov
     - Vytvorenie cieľového atribútu
-    - Rozdeleni dát na trénovaciu a testovaciu množinu
+    - Rozdelenie dát na trénovaciu a testovaciu množinu
     - Použitie krokovej regresie na identifikáciu významných atribútov
 3. **Modelovanie**
     - Naivný Bayesov klasifikátor
