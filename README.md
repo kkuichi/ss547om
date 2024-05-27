@@ -36,3 +36,5 @@ Praktická časť pozostáva zo 4 zdrojových kódov, ktoré je potrebné spusti
 4. Modelovanie.ipynb
 
 Link na dataset: *https://www.kaggle.com/datasets/rafaelborgesgraunke/traffic-accidents-brazil-pt-br*
+
+Zdrojový kód dostupný na: *https://github.com/kkuichi/ss547om*
