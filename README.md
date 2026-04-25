@@ -1,6 +1,6 @@
 # Systémy na podporu rozhodovania v medicíne
  
-Webová aplikácia implementovaná v **Streamlit** určená pre lekárov a klinických pracovníkov. Systém umožňuje analýzu hospitalizovaných pacientov s COVID-19 prostredníctvom výpočtu medicínskych indexov, štatistického porovnávania pandémových vĺn a vizualizácie mortality. Rozhodovacia logika je postavená výhradne na pravidlách (rule-based) a referenčných hodnotách – nie na strojovom učení.
+Webová aplikácia implementovaná v **Streamlit** určená pre lekárov. Systém umožňuje analýzu hospitalizovaných pacientov s COVID-19 prostredníctvom výpočtu medicínskych indexov, štatistického porovnávania pandémových vĺn a vizualizácie mortality. Rozhodovacia logika je postavená výhradne na pravidlách (rule-based) a referenčných hodnotách – nie na strojovom učení.
  
 ---
  
