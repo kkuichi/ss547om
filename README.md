@@ -19,7 +19,7 @@ Webová aplikácia implementovaná v **Streamlit** určená pre lekárov a klini
 ```
 MASTER-THESIS/
 │
-├── app.py                      # Hlavný vstupný bod Streamlit aplikácie
+├── app.py                      # Hlavná Streamlit aplikácia
 │
 ├── modules/
 │   ├── data_loader.py          # Načítanie a predspracovanie dát
@@ -27,7 +27,7 @@ MASTER-THESIS/
 │   ├── indices.py              # Výpočtové funkcie a register indexov
 │   ├── state_manager.py        # Správa session state a histórie zmien
 │   ├── statistical_tests.py    # Štatistické testy a výpočty
-│   └── visualization.py        # Vizualizačné funkcie (Plotly)
+│   └── visualization.py        # Vizualizačné funkcie
 │
 ├── data/
 │   ├── vlna_1.csv              # Dáta – 1. vlna pandémie
