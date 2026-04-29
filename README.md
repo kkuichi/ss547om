@@ -1,6 +1,6 @@
 # Systémy na podporu rozhodovania v medicíne
  
-Webová aplikácia implementovaná v **Streamlit** určená pre lekárov. Systém umožňuje analýzu hospitalizovaných pacientov s COVID-19 prostredníctvom výpočtu medicínskych indexov, štatistického porovnávania pandémových vĺn a vizualizácie mortality. Rozhodovacia logika je postavená výhradne na pravidlách (rule-based) a referenčných hodnotách – nie na strojovom učení.
+Webová aplikácia implementovaná v **Streamlit** určená pre lekárov. Systém umožňuje analýzu hospitalizovaných pacientov s COVID-19 prostredníctvom výpočtu klinických indexov, štatistického porovnávania vĺn a vizualizácie krivky mortality. Rozhodovacia logika je postavená výhradne na pravidlách a referenčných hodnotách.
  
 ---
  
@@ -49,7 +49,7 @@ Hlavný súbor aplikácie. Riadi celkovú štruktúru UI, navigáciu medzi zálo
  
 **Kľúčové časti:**
  
-- **Konfigurácia a inicializácia** – nastavenie stránky (`st.set_page_config`), inicializácia session state pri prvom spustení, načítanie dát aktívnej vlny.
+- **Konfigurácia a inicializácia** – nastavenie stránky (`st.set_page_config`), inicializácia session state pri prvom spustení, načítanie dát zvolenej vlny (natívne vlna 1).
 - **Navigácia** – horizontálna navigačná lišta implementovaná cez `st.columns` a tlačidlá, so zvýrazneným aktívnym tabom pomocou inline CSS. Záložky: *Databáza pacientov*, *Analýza indexov*, *Krivka mortality*, *Štatistická analýza*.
 - **Sidebar** – pre záložky Databáza, Analýza a Mortalita sa vykresľujú demografické a klinické filtre; pre záložku Štatistická analýza sa zobrazujú nastavenia filtrovania odľahlých hodnôt.
 **Funkcie:**
@@ -62,15 +62,15 @@ Hlavný súbor aplikácie. Riadi celkovú štruktúru UI, navigáciu medzi zálo
 | `_render_mortality_card(col, skupina, s, color)` | Vykreslí štatistickú kartu pre skupinu Exitus alebo Prepustenie (hospitalizácia, vek, pohlavie). |
 | `_render_desc_stats(...)` | Zobrazí deskriptívne štatistiky (n, priemer, medián, Q1/Q3, min/max) pre jednu skupinu v štatistickej analýze. |
 | `_render_desc_stats_from_dict(label, s)` | Obal nad `_render_desc_stats` – prijíma slovník z `statistical_tests`. |
-| `_render_statistical_metrics(p_value, cliffs_d)` | Zobrazí p-hodnotu (vrátane vedeckého zápisu pre p < 0,0001) a Cliff's delta s interpretáciou veľkosti účinku. |
-| `_make_boxplot(...)` | Vykreslí Plotly boxplot dvoch skupín. Ak je aktívny outlier filter, automaticky zobrazí filtrované dáta. |
+| `_render_statistical_metrics(p_value, cliffs_d)` | Zobrazí p-hodnotu a deltu Cliff s interpretáciou veľkosti účinku. |
+| `_make_boxplot(...)` | Vykreslí Plotly krabicový graf dvoch skupín. Ak je aktívny outlier filter, automaticky zobrazí filtrované dáta. |
 | `_render_result_container(...)` | Obaľovací kontajner pre výsledok jedného indexu – farebný banner podľa štatistickej významnosti, metriky a boxplot vedľa seba. |
  
 ---
  
 ### `modules/data_loader.py`
  
-Zodpovedá za načítanie CSV súborov pandémových vĺn a ich predspracovanie do konzistentnej podoby.
+Zodpovedá za načítanie CSV súborov vĺn a ich predspracovanie do konzistentnej podoby.
  
 **Konštanty:**
  
@@ -86,7 +86,7 @@ Zodpovedá za načítanie CSV súborov pandémových vĺn a ich predspracovanie 
  
 ### `modules/filters.py`
  
-Obsahuje všetky filtre zobrazované v bočnom paneli (sidebar) a komponent pre výber skupín indexov.
+Obsahuje všetky filtre zobrazované v bočnom paneli a komponent pre výber skupín indexov.
  
 **Konštanty:**
  
@@ -104,16 +104,16 @@ Obsahuje všetky filtre zobrazované v bočnom paneli (sidebar) a komponent pre 
  
 | Funkcia | Popis |
 |---|---|
-| `_render_index_filter(idx_name, df, w_key)` | Vykreslí interaktívny filter pre jeden klinický index s preset tlačidlami (Pod normou / V norme / Nad normou / Vlastný rozsah) podľa referenčných hodnôt z `INDEX_THRESHOLDS`. Vráti zvolený rozsah (min, max) alebo `None`. |
+| `_render_index_filter(idx_name, df, w_key)` | Vykreslí interaktívny filter pre jeden klinický index s prednastavenými tlačidlami (Pod normou / V norme / Nad normou / Vlastný rozsah) podľa referenčných hodnôt z `INDEX_THRESHOLDS`. Vráti zvolený rozsah (min, max) alebo `None`. |
 | `render_sidebar_filters(df)` | Vykreslí kompletný sidebar pre záložky Databáza, Analýza indexov a Krivka mortality. Obsahuje sekcie: výber vlny, demografia, dátumy, klinické testy, klinické indexy. Vráti vyfiltrovaný DataFrame a zvolenú vlnu. |
-| `render_sidebar_stat_filters()` | Vykreslí sidebar pre záložku Štatistická analýza – nastavenia filtrovania odľahlých hodnôt (metódy: IQR, Z-skóre, percentilové orezanie, manuálny rozsah). Vráti `outlier_cfg` slovník. |
+| `render_sidebar_stat_filters()` | Vykreslí sidebar pre záložku Štatistická analýza, nastavenia filtrovania odľahlých hodnôt (metódy: IQR, Z-skóre, percentilové orezanie, manuálny rozsah). Vráti `outlier_cfg` slovník. |
 | `render_index_group_selector(key_prefix)` | Dvojkrokový UI komponent pre výber indexov: najprv skupina (multiselect), potom konkrétne indexy z každej zvolenej skupiny. Vráti zoznam názvov vybraných indexov. |
  
 ---
  
 ### `modules/indices.py`
  
-Definuje všetky výpočtové funkcie medicínskych indexov a register pre ich programatické použitie.
+Definuje všetky výpočtové funkcie medicínskych indexov a register pre ich použitie.
  
 Každá výpočtová funkcia prijíma DataFrame a vracia `pd.Series` vypočítaných hodnôt. Delenie nulou je ošetrené nahradením nuly hodnotou `np.nan`.
  
@@ -130,15 +130,15 @@ Každá výpočtová funkcia prijíma DataFrame a vracia `pd.Series` vypočítan
  
 | Objekt | Popis |
 |---|---|
-| `INDEX_GROUPS` | Dvojúrovňový slovník `{skupina: {názov_indexu: funkcia}}` – používa sa pre UI (výber skupín) aj výpočty. |
-| `INDEX_REGISTRY` | Plochý slovník `{názov_indexu: funkcia}` – hlavný register pre priame volanie výpočtov kdekoľvek v aplikácii. |
+| `INDEX_GROUPS` | Dvojúrovňový slovník `{skupina: {názov_indexu: funkcia}}` - používa sa pre UI (výber skupín) aj výpočty. |
+| `INDEX_REGISTRY` | Slovník s indexami `{názov_indexu: funkcia}` – hlavný register pre priame volanie výpočtov kdekoľvek v aplikácii. |
 | `INDEX_THRESHOLDS` | Slovník referenčných medzí pre každý index (`low`, `high`, `unit`) – používa sa v filtroch a vizualizáciách. |
  
 ---
  
 ### `modules/state_manager.py`
  
-Spravuje stav aplikácie počas behu (session state) a implementuje mechanizmus undo/redo pre editáciu dát.
+Spravuje stav aplikácie počas jej priebehu a implementuje mechanizmus undo/redo pre editáciu dát.
  
 **Funkcie:**
  
@@ -162,20 +162,20 @@ Implementuje štatistické testy a orchestračnú logiku pre záložku Štatisti
  
 | Funkcia | Popis |
 |---|---|
-| `compute_cliffs_delta(data1, data2)` | Vypočíta Cliff's delta ako mieru veľkosti účinku v rozsahu [−1, 1]. Interpretácia: < 0,147 zanedbateľný, 0,147–0,330 malý, 0,330–0,474 stredný, ≥ 0,474 veľký. |
+| `compute_cliffs_delta(data1, data2)` | Vypočíta delta Cliff ako mieru veľkosti účinku v rozsahu [−1, 1]. Interpretácia: < 0,147 zanedbateľný, 0,147–0,330 malý, 0,330–0,474 stredný, ≥ 0,474 veľký. |
 | `apply_outlier_filter(series, method, ...)` | Filtruje odľahlé hodnoty zo série podľa zvolenej metódy: `none`, `iqr`, `zscore`, `percentile`, `manual`. |
 | `_load_wave(wave_id)` | Načíta CSV súbor pre danú vlnu. |
 | `_calc_index(df, index_name)` | Vypočíta index pre DataFrame a vráti sériu bez `NaN` a nekonečných hodnôt. |
 | `_desc_stats(series, n_pacientov)` | Vypočíta deskriptívne štatistiky: n, priemer, medián, Q1, Q3, min, max. |
-| `_last_per_patient(df)` | Vráti posledný záznam (odber) na pacienta – používa sa pri analýze mortality. |
-| `_mann_whitney(data1, data2)` | Vykoná Mann-Whitney U test (dvojstranný). Vráti (p-hodnota, Cliff's delta) alebo `None` pri nedostatku dát (< 5 záznamov). |
+| `_last_per_patient(df)` | Vráti posledný záznam (odber) pacienta – používa sa pri analýze mortality. |
+| `_mann_whitney(data1, data2)` | Vykoná Mann-Whitney U test (dvojstranný). Vráti (p-hodnota, delta Cliff) alebo `None` pri nedostatku dát (< 5 záznamov). |
  
 **Hlavné testovacie funkcie:**
  
 | Funkcia | Popis |
 |---|---|
-| `perform_mann_whitney_test(df1, df2, index_name, outlier_cfg)` | Porovná distribúciu indexu medzi dvoma vlnami (všetky záznamy). Vráti slovník s deskriptívnymi štatistikami, p-hodnotou, Cliff's delta a surovými dátami pre boxploty. |
-| `perform_mortality_between_waves(df1, df2, index_name, outlier_cfg, skupina1, skupina2)` | Porovná index medzi zvolenými skupinami (Exitus/Prepustenie) z dvoch rôznych vĺn. Pracuje s posledným odberom na pacienta. |
+| `perform_mann_whitney_test(df1, df2, index_name, outlier_cfg)` | Porovná distribúciu indexu medzi dvoma vlnami (všetky záznamy). Vráti slovník s deskriptívnymi štatistikami, p-hodnotou, delta Ciff a surovými dátami pre krabicové grafy. |
+| `perform_mortality_between_waves(df1, df2, index_name, outlier_cfg, skupina1, skupina2)` | Porovná index medzi zvolenými skupinami (Exitus/Prepustenie) z dvoch rôznych vĺn. Pracuje s posledným odberom pacienta. |
 | `run_statistical_analysis(wave1_id, wave2_id, selected_indices, outlier_cfg)` | Spustí `perform_mann_whitney_test` pre všetky zvolené indexy medzi dvoma vlnami. Vráti trojicu: DataFrame výsledkov, zoznam neúspešných indexov, slovník dát pre boxploty. |
 | `run_mortality_between_waves(wave1_id, wave2_id, selected_indices, outlier_cfg, skupina1, skupina2)` | Spustí `perform_mortality_between_waves` pre všetky zvolené indexy. Vráti dvojicu: zoznam výsledkov, zoznam neúspešných indexov. |
  
@@ -202,7 +202,7 @@ Obsahuje funkcie na tvorbu interaktívnych Plotly grafov a výpočet štatistík
 ## Záložky aplikácie
  
 ### Databáza pacientov
-Prehľad hospitalizovaných pacientov aktívnej vlny s možnosťou filtrovania podľa demografických údajov, dátumov, klinických testov a vypočítaných indexov. Výberom pacienta v tabuľke sa zobrazí jeho editovateľná karta s históriou odberov. Zmeny je možné uložiť, vrátiť späť (undo), zopakovať (redo) alebo obnoviť do pôvodného stavu.
+Prehľad hospitalizovaných pacientov zvolenej vlny s možnosťou filtrovania podľa demografických údajov, dátumov, klinických testov a vypočítaných indexov. Výberom pacienta v tabuľke sa zobrazí jeho editovateľná karta s históriou odberov. Zmeny je možné uložiť, vrátiť späť (undo), zopakovať (redo) alebo obnoviť do pôvodného stavu.
  
 ### Analýza indexov
 Výpočet a vizualizácia časového vývoja zvolených medicínskych indexov pre vybraných pacientov (max. 5). Pre každý index sa zobrazuje farebne kódovaný graf s referenčnými pásmami a benchmarkové porovnanie s podobnými pacientmi z rovnakej vlny.
@@ -211,7 +211,7 @@ Výpočet a vizualizácia časového vývoja zvolených medicínskych indexov pr
 Kumulatívna krivka exitov a prepustených pacientov zo zvolenej skupiny v závislosti od dĺžky hospitalizácie. Doplnená súhrnnými štatistikami (počty, mortalita, štatistiky hospitalizácie, veku a pohlavia) pre obe skupiny.
  
 ### Štatistická analýza
-Mann-Whitney U test s výpočtom Cliff's delta pre porovnanie distribúcií indexov medzi dvoma zvolenými vlnami. Obsahuje dve pod-záložky: všeobecné porovnanie vĺn a porovnanie s ohľadom na mortalitu (Exitus vs. Prepustenie). Výsledky sú doplnené boxplotmi a deskriptívnymi štatistikami.
+Mann-Whitney U test s výpočtom delta Cliff a p-hodnoty pre porovnanie distribúcií indexov medzi dvoma zvolenými vlnami. Obsahuje dve pod-záložky: všeobecné porovnanie vĺn a porovnanie s ohľadom na mortalitu (Exitus vs. Prepustenie). Výsledky sú doplnené krabicovými grafmi a deskriptívnymi štatistikami.
  
 ---
  
@@ -245,7 +245,7 @@ Aplikácia sa otvorí v prehliadači na adrese `http://localhost:8501`.
  
 ## Dáta
  
-Dátové súbory (`data/vlna_1.csv` – `data/vlna_4.csv`) nie sú súčasťou tohto repozitára z dôvodu ochrany zdravotných údajov. Súbory pochádzajú z klinického výskumného projektu a ich zverejnenie nie je povolené.
+Dátové súbory (`data/vlna_1.csv` – `data/vlna_4.csv`) nie sú súčasťou tohto repozitára z dôvodu ochrany údajov. Súbory pochádzajú z klinického výskumného projektu a ich zverejnenie nie je povolené.
  
 Každý súbor obsahuje záznamy hospitalizovaných pacientov s COVID-19 s laboratórnymi hodnotami z jednotlivých odberov. Štruktúra: demografické údaje, dátumy, dĺžka hospitalizácie, závažnosť priebehu ochorenia a 47 laboratórnych parametrov (hematologické, biochemické, koagulačné a imunologické hodnoty).
  
